@@ -1,0 +1,249 @@
+{
+  "$comment": "Single source of truth. Run `python tools/generate_metadata.py` to regenerate force-app metadata, data-dictionary.md and erd.md.",
+  "apiVersion": "62.0",
+  "objects": [
+    {
+      "api": "Account", "standard": true, "label": "Account",
+      "desc": "Standard Account represents every institution: borrower, lender, arranger or agent. Roles are held in a multi-select picklist (see ADR-002).",
+      "fields": [
+        {"api": "LEI__c", "label": "LEI", "type": "Text", "length": 20, "unique": true, "d": "ISO 17442 Legal Entity Identifier."},
+        {"api": "Institution_Roles__c", "label": "Institution Roles", "type": "MultiPicklist", "values": ["Borrower", "Lender", "Arranger", "Agent"], "d": "Roles this institution plays across deals."},
+        {"api": "Institution_Type__c", "label": "Institution Type", "type": "Picklist", "values": ["Commercial Bank", "Investment Bank", "Institutional Investor", "Fund", "Insurance", "Corporate", "Other"]},
+        {"api": "Country_Code__c", "label": "Country Code", "type": "Text", "length": 2, "d": "ISO 3166-1 alpha-2."},
+        {"api": "Credit_Rating__c", "label": "Credit Rating", "type": "Picklist", "values": ["AAA", "AA", "A", "BBB", "BB", "B", "CCC", "NR"]},
+        {"api": "Settlement_Account__c", "label": "Settlement Account (IBAN)", "type": "Text", "length": 34},
+        {"api": "Internal_Limit__c", "label": "Internal Credit Limit", "type": "Currency", "d": "Maximum exposure the institution may hold with us."}
+      ]
+    },
+    {
+      "api": "Syndicated_Deal__c", "label": "Syndicated Deal", "plural": "Syndicated Deals", "sharing": "ReadWrite", "history": true,
+      "desc": "Top-level mandate/transaction. Aggregates one or more facilities.",
+      "name": {"label": "Deal Name", "type": "Text"},
+      "fields": [
+        {"api": "Borrower__c", "label": "Borrower", "type": "Lookup", "ref": "Account", "rel": "Deals_As_Borrower", "relLabel": "Deals (Borrower)", "required": true},
+        {"api": "Arranger__c", "label": "Lead Arranger", "type": "Lookup", "ref": "Account", "rel": "Deals_As_Arranger", "relLabel": "Deals (Arranger)"},
+        {"api": "Agent__c", "label": "Facility Agent", "type": "Lookup", "ref": "Account", "rel": "Deals_As_Agent", "relLabel": "Deals (Agent)"},
+        {"api": "Stage__c", "label": "Stage", "type": "Picklist", "values": ["Mandate", "Structuring", "Syndication", "Documentation", "Closing", "Active", "Matured", "Cancelled"], "required": true, "default": "Mandate", "track": true},
+        {"api": "Currency_Code__c", "label": "Deal Currency", "type": "Picklist", "values": ["USD", "EUR", "GBP", "CHF", "JPY"], "required": true, "default": "USD", "d": "Informational ISO code. Amount fields use the org currency (see docs/09-roadmap-and-limitations.md)."},
+        {"api": "Governing_Law__c", "label": "Governing Law", "type": "Picklist", "values": ["English Law", "New York Law", "German Law", "French Law", "Other"]},
+        {"api": "Purpose__c", "label": "Purpose", "type": "LongText", "length": 4000},
+        {"api": "Mandate_Date__c", "label": "Mandate Date", "type": "Date"},
+        {"api": "Signing_Date__c", "label": "Signing Date", "type": "Date"},
+        {"api": "Closing_Date__c", "label": "Closing Date", "type": "Date"},
+        {"api": "CPs_Satisfied__c", "label": "Conditions Precedent Satisfied", "type": "Checkbox", "track": true, "d": "Gate for closing: the Agent confirms all CPs are met."},
+        {"api": "Total_Commitment__c", "label": "Total Commitment", "type": "Rollup", "field": "Facility__c.Commitment_Amount__c", "fk": "Facility__c.Deal__c", "op": "sum", "d": "Sum of all facility commitments."}
+      ]
+    },
+    {
+      "api": "Facility__c", "label": "Facility", "plural": "Facilities", "sharing": "ControlledByParent", "history": true,
+      "desc": "A tranche (Term Loan A/B, RCF...) with its own pricing, maturity and lender group.",
+      "name": {"label": "Facility Name", "type": "Text"},
+      "fields": [
+        {"api": "Deal__c", "label": "Deal", "type": "MasterDetail", "ref": "Syndicated_Deal__c", "rel": "Facilities", "relLabel": "Facilities"},
+        {"api": "Facility_Type__c", "label": "Facility Type", "type": "Picklist", "values": ["Term Loan A", "Term Loan B", "Revolving Credit", "Delayed Draw Term Loan", "Bridge"], "required": true},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Structuring", "Open for Commitments", "Allocated", "Active", "Repaid", "Cancelled"], "required": true, "default": "Structuring", "track": true},
+        {"api": "Commitment_Amount__c", "label": "Commitment Amount", "type": "Currency", "required": true, "track": true},
+        {"api": "Base_Rate__c", "label": "Base Rate / Benchmark", "type": "Picklist", "values": ["SOFR", "EURIBOR", "SONIA", "SARON", "TONA", "Fixed"]},
+        {"api": "Margin_Bps__c", "label": "Margin (bps)", "type": "Number", "precision": 6, "scale": 2, "track": true},
+        {"api": "Day_Count__c", "label": "Day Count Convention", "type": "Picklist", "values": ["ACT/360", "ACT/365", "30E/360"], "required": true, "default": "ACT/360"},
+        {"api": "Interest_Period_Months__c", "label": "Interest Period (months)", "type": "Number", "precision": 2, "scale": 0, "default": "3"},
+        {"api": "Maturity_Date__c", "label": "Maturity Date", "type": "Date", "required": true},
+        {"api": "Availability_End_Date__c", "label": "Availability End Date", "type": "Date", "d": "Last date a drawdown may be requested."},
+        {"api": "Soft_Commit_Total__c", "label": "Total Soft Commitments", "type": "Rollup", "field": "Lender_Commitment__c.Soft_Commit_Amount__c", "fk": "Lender_Commitment__c.Facility__c", "op": "sum"},
+        {"api": "Allocated_Amount__c", "label": "Total Allocated", "type": "Rollup", "field": "Lender_Commitment__c.Allocated_Amount__c", "fk": "Lender_Commitment__c.Facility__c", "op": "sum"},
+        {"api": "Drawn_Amount__c", "label": "Drawn (Funded)", "type": "Rollup", "field": "Drawdown__c.Amount__c", "fk": "Drawdown__c.Facility__c", "op": "sum", "filter": [["Drawdown__c.Status__c", "equals", "Funded"]]},
+        {"api": "Pending_Amount__c", "label": "Pending Drawdowns", "type": "Rollup", "field": "Drawdown__c.Amount__c", "fk": "Drawdown__c.Facility__c", "op": "sum", "filter": [["Drawdown__c.Status__c", "equals", "Notified"]], "d": "Notified to lenders but not yet funded; reserves availability."},
+        {"api": "Available_Amount__c", "label": "Available to Draw", "type": "Formula", "returns": "Currency", "scale": 2, "formula": "Commitment_Amount__c - Drawn_Amount__c - Pending_Amount__c"},
+        {"api": "Oversubscription__c", "label": "Oversubscription (x)", "type": "Formula", "returns": "Number", "scale": 2, "formula": "IF(Commitment_Amount__c = 0, 0, Soft_Commit_Total__c / Commitment_Amount__c)"}
+      ]
+    },
+    {
+      "api": "Lender_Commitment__c", "label": "Lender Commitment", "plural": "Lender Commitments", "sharing": "ControlledByParent", "history": true,
+      "desc": "A lender's participation in one facility: invitation, soft commit, final allocation, signed hold.",
+      "name": {"label": "Commitment No.", "type": "AutoNumber", "format": "LC-{00000}"},
+      "fields": [
+        {"api": "Facility__c", "label": "Facility", "type": "MasterDetail", "ref": "Facility__c", "rel": "Lender_Commitments", "relLabel": "Lender Commitments"},
+        {"api": "Lender__c", "label": "Lender", "type": "Lookup", "ref": "Account", "rel": "Lender_Commitments", "relLabel": "Lender Commitments", "required": true},
+        {"api": "Role__c", "label": "Role", "type": "Picklist", "values": ["Mandated Lead Arranger", "Bookrunner", "Co-Arranger", "Participant"], "default": "Participant"},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Invited", "Soft Committed", "Allocated", "Signed", "Declined", "Withdrawn"], "required": true, "default": "Invited", "track": true},
+        {"api": "Soft_Commit_Amount__c", "label": "Soft Commitment", "type": "Currency", "default": "0", "d": "Indicative amount offered during bookbuilding."},
+        {"api": "Allocated_Amount__c", "label": "Allocated Commitment", "type": "Currency", "default": "0", "track": true, "d": "Final hold after cut-back. Drives pro-rata for drawdowns and interest."},
+        {"api": "Funded_Amount__c", "label": "Funded Outstanding", "type": "Currency", "default": "0", "d": "Principal currently funded by this lender (maintained by DrawdownService)."},
+        {"api": "Share_Pct__c", "label": "Share of Facility (%)", "type": "Formula", "returns": "Number", "scale": 4, "formula": "IF(Facility__r.Commitment_Amount__c = 0, 0, Allocated_Amount__c / Facility__r.Commitment_Amount__c * 100)"}
+      ]
+    },
+    {
+      "api": "Drawdown__c", "label": "Drawdown", "plural": "Drawdowns", "sharing": "ControlledByParent", "history": true,
+      "desc": "A utilisation request by the borrower against a facility.",
+      "name": {"label": "Drawdown No.", "type": "AutoNumber", "format": "DD-{00000}"},
+      "fields": [
+        {"api": "Facility__c", "label": "Facility", "type": "MasterDetail", "ref": "Facility__c", "rel": "Drawdowns", "relLabel": "Drawdowns"},
+        {"api": "Amount__c", "label": "Amount", "type": "Currency", "required": true},
+        {"api": "Request_Date__c", "label": "Request Date", "type": "Date", "default": "TODAY()"},
+        {"api": "Value_Date__c", "label": "Value (Utilisation) Date", "type": "Date", "required": true},
+        {"api": "Interest_Period_Months__c", "label": "Interest Period (months)", "type": "Number", "precision": 2, "scale": 0, "d": "Overrides the facility default when set."},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Requested", "Notified", "Funded", "Rejected", "Repaid"], "required": true, "default": "Requested", "track": true},
+        {"api": "Rejection_Reason__c", "label": "Rejection Reason", "type": "Text", "length": 255},
+        {"api": "Funded_Date__c", "label": "Funded Date", "type": "Date"},
+        {"api": "Repayment_Date__c", "label": "Repayment Date", "type": "Date"}
+      ]
+    },
+    {
+      "api": "Drawdown_Share__c", "label": "Drawdown Share", "plural": "Drawdown Shares", "sharing": "ReadWrite",
+      "desc": "Each lender's pro-rata funding obligation for one drawdown.",
+      "name": {"label": "Share No.", "type": "AutoNumber", "format": "DS-{00000}"},
+      "fields": [
+        {"api": "Drawdown__c", "label": "Drawdown", "type": "Lookup", "ref": "Drawdown__c", "rel": "Shares", "relLabel": "Shares", "required": true},
+        {"api": "Lender_Commitment__c", "label": "Lender Commitment", "type": "Lookup", "ref": "Lender_Commitment__c", "rel": "Drawdown_Shares", "relLabel": "Drawdown Shares", "required": true},
+        {"api": "Lender_Name__c", "label": "Lender", "type": "Formula", "returns": "Text", "formula": "Lender_Commitment__r.Lender__r.Name"},
+        {"api": "Share_Amount__c", "label": "Share Amount", "type": "Currency"},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Notified", "Funded", "Failed"], "required": true, "default": "Notified"},
+        {"api": "Funded_Date__c", "label": "Funded Date", "type": "Date"}
+      ]
+    },
+    {
+      "api": "Interest_Period__c", "label": "Interest Period", "plural": "Interest Periods", "sharing": "ReadWrite", "history": true,
+      "desc": "One interest accrual period of a drawdown: rate fixing, calculation, payment, distribution.",
+      "name": {"label": "Period No.", "type": "AutoNumber", "format": "IP-{00000}"},
+      "fields": [
+        {"api": "Drawdown__c", "label": "Drawdown", "type": "Lookup", "ref": "Drawdown__c", "rel": "Interest_Periods", "relLabel": "Interest Periods", "required": true},
+        {"api": "Start_Date__c", "label": "Start Date", "type": "Date", "required": true},
+        {"api": "End_Date__c", "label": "End Date", "type": "Date", "required": true},
+        {"api": "Due_Date__c", "label": "Payment Due Date", "type": "Date"},
+        {"api": "Principal_Amount__c", "label": "Principal", "type": "Currency", "required": true},
+        {"api": "Base_Rate_Pct__c", "label": "Base Rate (%)", "type": "Number", "precision": 10, "scale": 4, "track": true},
+        {"api": "Margin_Bps__c", "label": "Margin (bps)", "type": "Number", "precision": 6, "scale": 2},
+        {"api": "All_In_Rate_Pct__c", "label": "All-in Rate (%)", "type": "Formula", "returns": "Number", "scale": 4, "formula": "MAX(Base_Rate_Pct__c, 0) + Margin_Bps__c / 100", "d": "Base rate floored at zero, plus margin."},
+        {"api": "Day_Count__c", "label": "Day Count", "type": "Picklist", "values": ["ACT/360", "ACT/365", "30E/360"]},
+        {"api": "Calendar_Days__c", "label": "Calendar Days", "type": "Formula", "returns": "Number", "scale": 0, "formula": "End_Date__c - Start_Date__c"},
+        {"api": "Interest_Amount__c", "label": "Interest Amount", "type": "Currency", "track": true},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Open", "Rate Fixed", "Calculated", "Paid", "Distributed"], "required": true, "default": "Open", "track": true},
+        {"api": "Payment_Date__c", "label": "Payment Received Date", "type": "Date"}
+      ]
+    },
+    {
+      "api": "Payment_Distribution__c", "label": "Payment Distribution", "plural": "Payment Distributions", "sharing": "ReadWrite",
+      "desc": "The portion of a borrower payment owed to one lender (interest, principal or fee).",
+      "name": {"label": "Distribution No.", "type": "AutoNumber", "format": "PD-{00000}"},
+      "fields": [
+        {"api": "Interest_Period__c", "label": "Interest Period", "type": "Lookup", "ref": "Interest_Period__c", "rel": "Distributions", "relLabel": "Distributions", "required": true},
+        {"api": "Lender_Commitment__c", "label": "Lender Commitment", "type": "Lookup", "ref": "Lender_Commitment__c", "rel": "Distributions", "relLabel": "Distributions", "required": true},
+        {"api": "Distribution_Type__c", "label": "Type", "type": "Picklist", "values": ["Interest", "Principal", "Fee"], "default": "Interest"},
+        {"api": "Amount__c", "label": "Amount", "type": "Currency"},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Pending", "Paid", "Failed"], "required": true, "default": "Pending"},
+        {"api": "Paid_Date__c", "label": "Paid Date", "type": "Date"},
+        {"api": "Settlement_Reference__c", "label": "Settlement Reference", "type": "Text", "length": 50}
+      ]
+    },
+    {
+      "api": "Fee__c", "label": "Fee", "plural": "Fees", "sharing": "ControlledByParent",
+      "desc": "Fee terms attached to a facility (arrangement, agency, commitment...). Schema-level in v0.1: no accrual engine yet.",
+      "name": {"label": "Fee No.", "type": "AutoNumber", "format": "FEE-{00000}"},
+      "fields": [
+        {"api": "Facility__c", "label": "Facility", "type": "MasterDetail", "ref": "Facility__c", "rel": "Fees", "relLabel": "Fees"},
+        {"api": "Fee_Type__c", "label": "Fee Type", "type": "Picklist", "values": ["Arrangement", "Upfront", "Agency", "Commitment", "Utilisation", "Prepayment", "Other"], "required": true},
+        {"api": "Calculation_Basis__c", "label": "Calculation Basis", "type": "Picklist", "values": ["Fixed Amount", "Percent of Commitment", "Percent of Undrawn"]},
+        {"api": "Fixed_Amount__c", "label": "Fixed Amount", "type": "Currency"},
+        {"api": "Rate_Bps__c", "label": "Rate (bps)", "type": "Number", "precision": 6, "scale": 2},
+        {"api": "Frequency__c", "label": "Frequency", "type": "Picklist", "values": ["One-off", "Quarterly", "Semi-Annual", "Annual"]},
+        {"api": "Payee__c", "label": "Payee", "type": "Lookup", "ref": "Account", "rel": "Fees_Receivable", "relLabel": "Fees Receivable"},
+        {"api": "Next_Payment_Date__c", "label": "Next Payment Date", "type": "Date"},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Agreed", "Accrued", "Invoiced", "Paid"], "required": true, "default": "Agreed"}
+      ]
+    },
+    {
+      "api": "Covenant__c", "label": "Covenant", "plural": "Covenants", "sharing": "ControlledByParent", "history": true,
+      "desc": "A financial or information undertaking given by the borrower.",
+      "name": {"label": "Covenant Name", "type": "Text"},
+      "fields": [
+        {"api": "Deal__c", "label": "Deal", "type": "MasterDetail", "ref": "Syndicated_Deal__c", "rel": "Covenants", "relLabel": "Covenants"},
+        {"api": "Covenant_Type__c", "label": "Type", "type": "Picklist", "values": ["Financial", "Information Undertaking", "Negative Pledge", "Event of Default"], "required": true},
+        {"api": "Metric__c", "label": "Metric", "type": "Picklist", "values": ["Net Debt / EBITDA", "Interest Cover", "DSCR", "Gearing", "Other"]},
+        {"api": "Operator__c", "label": "Test Direction", "type": "Picklist", "values": ["Maximum", "Minimum"], "default": "Maximum", "d": "Maximum: actual must be <= threshold. Minimum: actual must be >= threshold."},
+        {"api": "Threshold__c", "label": "Threshold", "type": "Number", "precision": 10, "scale": 4},
+        {"api": "Test_Frequency__c", "label": "Test Frequency", "type": "Picklist", "values": ["Quarterly", "Semi-Annual", "Annual"]},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Not Tested", "Compliant", "Breached", "Waived"], "required": true, "default": "Not Tested", "track": true},
+        {"api": "Description__c", "label": "Description", "type": "LongText", "length": 4000}
+      ]
+    },
+    {
+      "api": "Covenant_Test__c", "label": "Covenant Test", "plural": "Covenant Tests", "sharing": "ControlledByParent",
+      "desc": "One compliance test of a covenant (from a compliance certificate).",
+      "name": {"label": "Test No.", "type": "AutoNumber", "format": "CT-{00000}"},
+      "fields": [
+        {"api": "Covenant__c", "label": "Covenant", "type": "MasterDetail", "ref": "Covenant__c", "rel": "Tests", "relLabel": "Tests"},
+        {"api": "Test_Date__c", "label": "Test Date", "type": "Date", "required": true},
+        {"api": "Actual_Value__c", "label": "Actual Value", "type": "Number", "precision": 10, "scale": 4},
+        {"api": "Result__c", "label": "Result", "type": "Picklist", "values": ["Pass", "Breach", "Waived"], "d": "Set automatically by CovenantService unless manually Waived."},
+        {"api": "Notes__c", "label": "Notes", "type": "Text", "length": 255}
+      ]
+    },
+    {
+      "api": "Amendment_Request__c", "label": "Amendment Request", "plural": "Amendment Requests", "sharing": "ControlledByParent", "history": true,
+      "desc": "A waiver or amendment needing lender consent, voted by commitment weight.",
+      "name": {"label": "Amendment No.", "type": "AutoNumber", "format": "AM-{0000}"},
+      "fields": [
+        {"api": "Deal__c", "label": "Deal", "type": "MasterDetail", "ref": "Syndicated_Deal__c", "rel": "Amendments", "relLabel": "Amendments"},
+        {"api": "Amendment_Type__c", "label": "Type", "type": "Picklist", "values": ["Waiver", "Margin Change", "Maturity Extension", "Covenant Reset", "Other"], "required": true},
+        {"api": "Description__c", "label": "Description", "type": "LongText", "length": 4000},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Draft", "Circulated", "Approved", "Rejected", "Expired"], "required": true, "default": "Draft", "track": true},
+        {"api": "Required_Majority_Pct__c", "label": "Required Majority %", "type": "Percent", "precision": 7, "scale": 2, "default": "66.67", "d": "66.67 = Super Majority Lenders; 100 = unanimous (all-lender matters)."},
+        {"api": "Response_Deadline__c", "label": "Response Deadline", "type": "Date"},
+        {"api": "Consent_Pct__c", "label": "Consenting %", "type": "Percent", "precision": 10, "scale": 4},
+        {"api": "Decline_Pct__c", "label": "Declining %", "type": "Percent", "precision": 10, "scale": 4},
+        {"api": "Resolution_Date__c", "label": "Resolution Date", "type": "Date"}
+      ]
+    },
+    {
+      "api": "Lender_Consent__c", "label": "Lender Consent", "plural": "Lender Consents", "sharing": "ControlledByParent",
+      "desc": "One lender's vote on one amendment, weighted by allocated commitment at circulation.",
+      "name": {"label": "Consent No.", "type": "AutoNumber", "format": "LCN-{00000}"},
+      "fields": [
+        {"api": "Amendment__c", "label": "Amendment", "type": "MasterDetail", "ref": "Amendment_Request__c", "rel": "Consents", "relLabel": "Consents"},
+        {"api": "Lender_Commitment__c", "label": "Lender Commitment", "type": "Lookup", "ref": "Lender_Commitment__c", "rel": "Consents", "relLabel": "Consents", "required": true},
+        {"api": "Response__c", "label": "Response", "type": "Picklist", "values": ["Pending", "Consent", "Decline"], "required": true, "default": "Pending"},
+        {"api": "Weight_Amount__c", "label": "Voting Weight", "type": "Currency", "d": "Snapshot of allocated commitment when circulated."},
+        {"api": "Responded_Date__c", "label": "Responded Date", "type": "Date"},
+        {"api": "Comment__c", "label": "Comment", "type": "Text", "length": 255}
+      ]
+    },
+    {
+      "api": "Assignment__c", "label": "Assignment", "plural": "Assignments", "sharing": "ReadWrite", "history": true,
+      "desc": "Secondary-market transfer of (part of) a lender's commitment to a new lender.",
+      "name": {"label": "Assignment No.", "type": "AutoNumber", "format": "AS-{00000}"},
+      "fields": [
+        {"api": "Seller_Commitment__c", "label": "Seller Commitment", "type": "Lookup", "ref": "Lender_Commitment__c", "rel": "Outgoing_Assignments", "relLabel": "Outgoing Assignments", "required": true},
+        {"api": "Buyer__c", "label": "Buyer", "type": "Lookup", "ref": "Account", "rel": "Incoming_Assignments", "relLabel": "Incoming Assignments", "required": true},
+        {"api": "Amount__c", "label": "Amount", "type": "Currency", "required": true},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Proposed", "Pending Borrower Consent", "Pending Agent Approval", "Settled", "Rejected"], "required": true, "default": "Proposed", "track": true},
+        {"api": "Trade_Date__c", "label": "Trade Date", "type": "Date"},
+        {"api": "Settlement_Date__c", "label": "Settlement Date", "type": "Date"},
+        {"api": "Transfer_Fee__c", "label": "Transfer Fee", "type": "Currency"}
+      ]
+    },
+    {
+      "api": "KYC_Check__c", "label": "KYC Check", "plural": "KYC Checks", "sharing": "ReadWrite", "history": true,
+      "desc": "Compliance evidence for an institution. Allocation and assignment are blocked without current KYC and Sanctions passes.",
+      "name": {"label": "Check No.", "type": "AutoNumber", "format": "KYC-{00000}"},
+      "fields": [
+        {"api": "Account__c", "label": "Institution", "type": "Lookup", "ref": "Account", "rel": "KYC_Checks", "relLabel": "KYC Checks", "required": true},
+        {"api": "Check_Type__c", "label": "Check Type", "type": "Picklist", "values": ["KYC", "Sanctions", "AML", "Credit Approval"], "required": true},
+        {"api": "Status__c", "label": "Status", "type": "Picklist", "values": ["Pending", "Passed", "Failed", "Expired"], "required": true, "default": "Pending", "track": true},
+        {"api": "Checked_Date__c", "label": "Checked Date", "type": "Date"},
+        {"api": "Expiry_Date__c", "label": "Expiry Date", "type": "Date"},
+        {"api": "Reference__c", "label": "Provider Reference", "type": "Text", "length": 80}
+      ]
+    },
+    {
+      "api": "Loan_Event__e", "label": "Loan Event", "plural": "Loan Events", "event": true,
+      "desc": "Platform event published on every business-significant state change; the integration and audit backbone.",
+      "name": {"label": "Loan Event Name", "type": "Text"},
+      "fields": [
+        {"api": "Event_Type__c", "label": "Event Type", "type": "Text", "length": 80},
+        {"api": "Deal_Id__c", "label": "Deal Id", "type": "Text", "length": 18},
+        {"api": "Record_Id__c", "label": "Record Id", "type": "Text", "length": 18},
+        {"api": "Payload__c", "label": "Payload (JSON)", "type": "LongText", "length": 32768}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "eventType": "COVENANT_BREACH", "dealId": "a00Wx000000AaAaIAK", "recordId": "a06Wx000004CoVaIAK",
+  "payload": { "covenantId": "a06Wx000004CoVaIAK", "testId": "a07Wx000005TeStIAK", "actual": 4.2, "threshold": 3.5 }
+}

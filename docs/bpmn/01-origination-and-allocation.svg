@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2160 880" width="2160" height="880" font-family="Helvetica, Arial, sans-serif" font-size="12">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#37474f"/></marker></defs>
+<rect x="0" y="0" width="2160" height="880" fill="#ffffff"/>
+<rect x="60" y="20" width="2090" height="850" fill="none" stroke="#37474f" stroke-width="1.5"/>
+<text x="74" y="36" font-size="13" font-weight="bold" fill="#263238">Origination, bookbuilding and allocation</text>
+<rect x="90" y="20" width="2060" height="170" fill="#f7f7f7" stroke="#90a4ae"/>
+<rect x="60" y="20" width="30" height="170" fill="#cfd8dc" stroke="#90a4ae"/>
+<text transform="translate(78,105.0) rotate(-90)" text-anchor="middle" font-weight="bold" fill="#263238">Borrower</text>
+<rect x="90" y="190" width="2060" height="170" fill="#ffffff" stroke="#90a4ae"/>
+<rect x="60" y="190" width="30" height="170" fill="#cfd8dc" stroke="#90a4ae"/>
+<text transform="translate(78,275.0) rotate(-90)" text-anchor="middle" font-weight="bold" fill="#263238">Arranger</text>
+<rect x="90" y="360" width="2060" height="170" fill="#f7f7f7" stroke="#90a4ae"/>
+<rect x="60" y="360" width="30" height="170" fill="#cfd8dc" stroke="#90a4ae"/>
+<text transform="translate(78,445.0) rotate(-90)" text-anchor="middle" font-weight="bold" fill="#263238">Lender</text>
+<rect x="90" y="530" width="2060" height="170" fill="#ffffff" stroke="#90a4ae"/>
+<rect x="60" y="530" width="30" height="170" fill="#cfd8dc" stroke="#90a4ae"/>
+<text transform="translate(78,615.0) rotate(-90)" text-anchor="middle" font-weight="bold" fill="#263238">Agent</text>
+<rect x="90" y="700" width="2060" height="170" fill="#e8f1fb" stroke="#90a4ae"/>
+<rect x="60" y="700" width="30" height="170" fill="#cfd8dc" stroke="#90a4ae"/>
+<text transform="translate(78,785.0) rotate(-90)" text-anchor="middle" font-weight="bold" fill="#263238">Salesforce</text>
+<polyline points="248,275 350,275" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="470,275 530,275" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="650,275 676,275 676,445 710,445" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="830,445 856,445 856,785 890,785" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="1010,785 1070,785" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="1190,785 1285,785" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="1335,785 1383,785 1383,275 1430,275" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="1388" y="777" font-size="11" fill="#455a64" font-style="italic">No</text>
+<polyline points="1490,307 1490,329 590,329 590,307" fill="none" stroke="#37474f" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="1040" y="343" font-size="11" fill="#455a64" font-style="italic">re-run</text>
+<polyline points="1335,785 1361,785 1361,105 1430,105" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="1366" y="777" font-size="11" fill="#455a64" font-style="italic">Yes</text>
+<polyline points="1550,105 1576,105 1576,615 1610,615" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="1730,615 1756,615 1756,785 1790,785" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<polyline points="1910,785 2012,785" fill="none" stroke="#37474f" stroke-width="1.5" marker-end="url(#ar)"/>
+<circle cx="230.0" cy="275.0" r="18.0" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+<text x="230.0" y="307.0" text-anchor="middle" font-size="11" fill="#212121">Mandate signed</text>
+<rect x="350.0" y="243.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="410.0" y="272.0" text-anchor="middle" fill="#212121">Create deal and</text>
+<text x="410.0" y="286.0" text-anchor="middle" fill="#212121">facilities</text>
+<rect x="530.0" y="243.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="590.0" y="279.0" text-anchor="middle" fill="#212121">Invite lenders</text>
+<rect x="710.0" y="413.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="770.0" y="442.0" text-anchor="middle" fill="#212121">Submit soft</text>
+<text x="770.0" y="456.0" text-anchor="middle" fill="#212121">commitment</text>
+<rect x="890.0" y="753.0" width="120" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+<text x="950.0" y="782.0" text-anchor="middle" fill="#212121">Screen KYC and</text>
+<text x="950.0" y="796.0" text-anchor="middle" fill="#212121">sanctions</text>
+<rect x="1070.0" y="753.0" width="120" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+<text x="1130.0" y="782.0" text-anchor="middle" fill="#212121">Allocate with</text>
+<text x="1130.0" y="796.0" text-anchor="middle" fill="#212121">pro-rata cut-back</text>
+<polygon points="1310.0,760.0 1335.0,785.0 1310.0,810.0 1285.0,785.0" fill="#fff8e1" stroke="#f9a825" stroke-width="2"/>
+<text x="1310.0" y="790.0" text-anchor="middle" font-size="16" font-weight="bold" fill="#f9a825">X</text>
+<text x="1310.0" y="824.0" text-anchor="middle" font-size="11" fill="#212121">Fully allocated?</text>
+<rect x="1430.0" y="243.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="1490.0" y="272.0" text-anchor="middle" fill="#212121">Widen syndicate</text>
+<text x="1490.0" y="286.0" text-anchor="middle" fill="#212121">or adjust amounts</text>
+<rect x="1430.0" y="73.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="1490.0" y="95.0" text-anchor="middle" fill="#212121">Negotiate</text>
+<text x="1490.0" y="109.0" text-anchor="middle" fill="#212121">documents and</text>
+<text x="1490.0" y="123.0" text-anchor="middle" fill="#212121">satisfy CPs</text>
+<rect x="1610.0" y="583.0" width="120" height="64" rx="8" fill="#ffffff" stroke="#37474f" stroke-width="2"/>
+<text x="1670.0" y="612.0" text-anchor="middle" fill="#212121">Confirm CPs</text>
+<text x="1670.0" y="626.0" text-anchor="middle" fill="#212121">satisfied</text>
+<rect x="1790.0" y="753.0" width="120" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+<text x="1850.0" y="789.0" text-anchor="middle" fill="#212121">Close facility</text>
+<circle cx="2030.0" cy="785.0" r="18.0" fill="#ffebee" stroke="#c62828" stroke-width="4"/>
+<text x="2030.0" y="817.0" text-anchor="middle" font-size="11" fill="#212121">Facility active</text>
+</svg>

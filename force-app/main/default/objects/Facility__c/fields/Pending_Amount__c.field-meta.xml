@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pending_Amount__c</fullName>
+    <description>Notified to lenders but not yet funded; reserves availability.</description>
+    <label>Pending Drawdowns</label>
+    <summaryFilterItems>
+        <field>Drawdown__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Notified</value>
+    </summaryFilterItems>
+    <summarizedField>Drawdown__c.Amount__c</summarizedField>
+    <summaryForeignKey>Drawdown__c.Facility__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

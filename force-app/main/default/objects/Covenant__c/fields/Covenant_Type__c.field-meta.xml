@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Covenant_Type__c</fullName>
+    <label>Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Financial</fullName>
+                <default>false</default>
+                <label>Financial</label>
+            </value>
+            <value>
+                <fullName>Information Undertaking</fullName>
+                <default>false</default>
+                <label>Information Undertaking</label>
+            </value>
+            <value>
+                <fullName>Negative Pledge</fullName>
+                <default>false</default>
+                <label>Negative Pledge</label>
+            </value>
+            <value>
+                <fullName>Event of Default</fullName>
+                <default>false</default>
+                <label>Event of Default</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

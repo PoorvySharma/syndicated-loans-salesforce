@@ -1,0 +1,74 @@
+<template>
+    <lightning-card title="Syndication Console" icon-name="standard:account">
+        <div slot="actions" class="slds-grid slds-grid_vertical-align-end">
+            <lightning-combobox name="deal" label="Deal" placeholder="Select a deal" value={dealId}
+                options={dealOptions} onchange={handleDeal}></lightning-combobox>
+            <lightning-button-icon class="slds-m-left_x-small" icon-name="utility:refresh" alternative-text="Refresh"
+                onclick={refresh}></lightning-button-icon>
+        </div>
+
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Working" size="small"></lightning-spinner>
+        </template>
+
+        <template lwc:if={deal}>
+            <div class="slds-p-horizontal_medium slds-m-bottom_small">
+                <p class="slds-text-heading_small">{deal.Name}</p>
+                <p class="slds-text-color_weak">
+                    Stage: <strong>{deal.Stage__c}</strong> · Borrower: {borrowerName} · Agent: {agentName} ·
+                    CPs satisfied: {cpText}
+                </p>
+            </div>
+
+            <template for:each={facilities} for:item="f">
+                <div key={f.Id} class="slds-box slds-m-around_small">
+                    <div class="slds-grid slds-wrap slds-grid_vertical-align-center">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12">
+                            <p class="slds-text-heading_small">{f.Name} · {f.Facility_Type__c}</p>
+                            <p class="slds-text-color_weak">Status: <strong>{f.Status__c}</strong> · Day count {f.Day_Count__c} · Margin {f.Margin_Bps__c} bps</p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 slds-text-align_right">
+                            <lightning-button label="Allocate" variant="neutral" data-id={f.Id} onclick={handleAllocate}
+                                disabled={f.disableAllocate}></lightning-button>
+                            <lightning-button label="Close facility" variant="brand" class="slds-m-left_x-small" data-id={f.Id}
+                                onclick={handleClose} disabled={f.disableClose}></lightning-button>
+                        </div>
+                    </div>
+
+                    <div class="slds-grid slds-wrap slds-m-vertical_small">
+                        <template for:each={f.metrics} for:item="m">
+                            <div key={m.label} class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-around_xx-small">
+                                <p class="slds-text-title">{m.label}</p>
+                                <p class="slds-text-heading_small">{m.value}</p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <p class="slds-text-title_caps slds-m-top_small">Lenders</p>
+                    <lightning-datatable key-field="Id" data={f.lenders} columns={lenderColumns} hide-checkbox-column></lightning-datatable>
+
+                    <p class="slds-text-title_caps slds-m-top_medium">Drawdowns</p>
+                    <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_x-small">
+                        <lightning-input type="number" label="Amount" step="0.01" data-field="amount" onchange={handleInput}></lightning-input>
+                        <lightning-input type="date" label="Value date" class="slds-m-left_x-small" data-field="valueDate" onchange={handleInput}></lightning-input>
+                        <lightning-button label="Request drawdown" class="slds-m-left_x-small" data-id={f.Id}
+                            onclick={handleRequestDrawdown}></lightning-button>
+                    </div>
+                    <lightning-datatable key-field="Id" data={f.drawdowns} columns={drawdownColumns} hide-checkbox-column
+                        onrowaction={handleRowAction}></lightning-datatable>
+
+                    <template lwc:if={f.hasPeriods}>
+                        <p class="slds-text-title_caps slds-m-top_medium">Interest periods</p>
+                        <lightning-input type="number" label="Base rate % (used by 'Fix rate')" step="0.0001" value={baseRate}
+                            data-field="baseRate" onchange={handleInput} class="slds-size_1-of-4"></lightning-input>
+                        <lightning-datatable key-field="Id" data={f.periods} columns={periodColumns} hide-checkbox-column
+                            onrowaction={handleRowAction}></lightning-datatable>
+                    </template>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p class="slds-p-around_medium slds-text-color_weak">Select a deal to see its facilities, lenders, drawdowns and interest.</p>
+        </template>
+    </lightning-card>
+</template>

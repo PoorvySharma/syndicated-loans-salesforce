@@ -1,0 +1,7 @@
+{
+  "eventType": "DRAWDOWN_NOTIFIED", "dealId": "a00Wx000000AaAaIAK", "recordId": "a03Wx000002XyZaIAK",
+  "payload": { "drawdownId": "a03Wx000002XyZaIAK", "amount": 40000000.00, "valueDate": "2026-12-01",
+               "shares": [ { "commitmentId": "a02Wx000001LcAaIAK", "amount": 16000000.00 },
+                           { "commitmentId": "a02Wx000001LcBbIAK", "amount": 13333333.33 },
+                           { "commitmentId": "a02Wx000001LcCcIAK", "amount": 10666666.67 } ] }
+}

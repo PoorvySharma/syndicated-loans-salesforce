@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>End-to-end syndicated loan lifecycle: origination, allocation, closing, drawdowns, interest, consents.</description>
+    <formFactors>Large</formFactors>
+    <label>Syndicated Loans</label>
+    <navType>Standard</navType>
+    <tabs>Syndication_Console</tabs>
+    <tabs>Syndicated_Deal__c</tabs>
+    <tabs>Facility__c</tabs>
+    <tabs>Lender_Commitment__c</tabs>
+    <tabs>Drawdown__c</tabs>
+    <tabs>Drawdown_Share__c</tabs>
+    <tabs>Interest_Period__c</tabs>
+    <tabs>Payment_Distribution__c</tabs>
+    <tabs>Fee__c</tabs>
+    <tabs>Covenant__c</tabs>
+    <tabs>Covenant_Test__c</tabs>
+    <tabs>Amendment_Request__c</tabs>
+    <tabs>Lender_Consent__c</tabs>
+    <tabs>Assignment__c</tabs>
+    <tabs>KYC_Check__c</tabs>
+    <tabs>standard-Account</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

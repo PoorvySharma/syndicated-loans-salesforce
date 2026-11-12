@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Drawn_Amount__c</fullName>
+    <label>Drawn (Funded)</label>
+    <summaryFilterItems>
+        <field>Drawdown__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Funded</value>
+    </summaryFilterItems>
+    <summarizedField>Drawdown__c.Amount__c</summarizedField>
+    <summaryForeignKey>Drawdown__c.Facility__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

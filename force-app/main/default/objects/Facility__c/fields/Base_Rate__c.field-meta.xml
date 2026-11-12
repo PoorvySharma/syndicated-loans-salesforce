@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Base_Rate__c</fullName>
+    <label>Base Rate / Benchmark</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SOFR</fullName>
+                <default>false</default>
+                <label>SOFR</label>
+            </value>
+            <value>
+                <fullName>EURIBOR</fullName>
+                <default>false</default>
+                <label>EURIBOR</label>
+            </value>
+            <value>
+                <fullName>SONIA</fullName>
+                <default>false</default>
+                <label>SONIA</label>
+            </value>
+            <value>
+                <fullName>SARON</fullName>
+                <default>false</default>
+                <label>SARON</label>
+            </value>
+            <value>
+                <fullName>TONA</fullName>
+                <default>false</default>
+                <label>TONA</label>
+            </value>
+            <value>
+                <fullName>Fixed</fullName>
+                <default>false</default>
+                <label>Fixed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

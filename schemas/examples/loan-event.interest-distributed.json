@@ -1,0 +1,7 @@
+{
+  "eventType": "INTEREST_DISTRIBUTED", "dealId": "a00Wx000000AaAaIAK", "recordId": "a05Wx000003QrStIAK",
+  "payload": { "periodId": "a05Wx000003QrStIAK", "drawdownId": "a03Wx000002XyZaIAK", "interestAmount": 680000.00,
+               "distributions": [ { "commitmentId": "a02Wx000001LcAaIAK", "amount": 272000.00 },
+                                  { "commitmentId": "a02Wx000001LcBbIAK", "amount": 226666.67 },
+                                  { "commitmentId": "a02Wx000001LcCcIAK", "amount": 181333.33 } ] }
+}

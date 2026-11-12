@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_interest_and_distribution" targetNamespace="https://example.org/syndicated-loans">
+  <bpmn:collaboration id="Collab_interest_and_distribution"><bpmn:participant id="Pool_interest_and_distribution" name="Interest period and payment distribution" processRef="Process_interest_and_distribution" /></bpmn:collaboration>
+  <bpmn:process id="Process_interest_and_distribution" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_0" name="Borrower">
+        <bpmn:flowNodeRef>t5</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1" name="Agent">
+        <bpmn:flowNodeRef>t2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t8</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_2" name="Lender">
+        <bpmn:flowNodeRef>t9</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_3" name="Salesforce">
+        <bpmn:flowNodeRef>s</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>e</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="s" name="Drawdown funded">
+      <bpmn:outgoing>Flow_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="t1" name="Open interest period">
+      <bpmn:incoming>Flow_0</bpmn:incoming>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="t2" name="Fix base rate">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="t3" name="Calculate interest">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="t4" name="Notify borrower of amount due">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="t5" name="Pay interest">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="t6" name="Record payment">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="t7" name="Split interest pro-rata">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="t8" name="Settle lender payments">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="t9" name="Receive interest">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="g1" name="More periods before maturity?">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e" name="Interest cycle complete">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0" sourceRef="s" targetRef="t1" />
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="t1" targetRef="t2" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="t2" targetRef="t3" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="t3" targetRef="t4" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="t4" targetRef="t5" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="t5" targetRef="t6" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="t6" targetRef="t7" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="t7" targetRef="t8" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="t8" targetRef="t9" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="t9" targetRef="g1" />
+    <bpmn:sequenceFlow id="Flow_10" name="Yes" sourceRef="g1" targetRef="t1" />
+    <bpmn:sequenceFlow id="Flow_11" name="No" sourceRef="g1" targetRef="e" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Collab_interest_and_distribution">
+      <bpmndi:BPMNShape id="Pool_interest_and_distribution_di" bpmnElement="Pool_interest_and_distribution" isHorizontal="true"><dc:Bounds x="60" y="20" width="2270" height="680" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0_di" bpmnElement="Lane_0" isHorizontal="true"><dc:Bounds x="90" y="20" width="2240" height="170" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1_di" bpmnElement="Lane_1" isHorizontal="true"><dc:Bounds x="90" y="190" width="2240" height="170" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_2_di" bpmnElement="Lane_2" isHorizontal="true"><dc:Bounds x="90" y="360" width="2240" height="170" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_3_di" bpmnElement="Lane_3" isHorizontal="true"><dc:Bounds x="90" y="530" width="2240" height="170" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s"><dc:Bounds x="212" y="597" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t1_di" bpmnElement="t1"><dc:Bounds x="350" y="583" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t2_di" bpmnElement="t2"><dc:Bounds x="530" y="243" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t3_di" bpmnElement="t3"><dc:Bounds x="710" y="583" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t4_di" bpmnElement="t4"><dc:Bounds x="890" y="243" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t5_di" bpmnElement="t5"><dc:Bounds x="1070" y="73" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t6_di" bpmnElement="t6"><dc:Bounds x="1250" y="243" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t7_di" bpmnElement="t7"><dc:Bounds x="1430" y="583" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t8_di" bpmnElement="t8"><dc:Bounds x="1610" y="243" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t9_di" bpmnElement="t9"><dc:Bounds x="1790" y="413" width="120" height="64" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g1_di" bpmnElement="g1" isMarkerVisible="true"><dc:Bounds x="2005" y="590" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_di" bpmnElement="e"><dc:Bounds x="2192" y="597" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0_di" bpmnElement="Flow_0">
+        <di:waypoint x="248" y="615" />
+        <di:waypoint x="350" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="470" y="615" />
+        <di:waypoint x="496" y="615" />
+        <di:waypoint x="496" y="275" />
+        <di:waypoint x="530" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="650" y="275" />
+        <di:waypoint x="676" y="275" />
+        <di:waypoint x="676" y="615" />
+        <di:waypoint x="710" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="830" y="615" />
+        <di:waypoint x="856" y="615" />
+        <di:waypoint x="856" y="275" />
+        <di:waypoint x="890" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="1010" y="275" />
+        <di:waypoint x="1036" y="275" />
+        <di:waypoint x="1036" y="105" />
+        <di:waypoint x="1070" y="105" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="1190" y="105" />
+        <di:waypoint x="1216" y="105" />
+        <di:waypoint x="1216" y="275" />
+        <di:waypoint x="1250" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1370" y="275" />
+        <di:waypoint x="1396" y="275" />
+        <di:waypoint x="1396" y="615" />
+        <di:waypoint x="1430" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1550" y="615" />
+        <di:waypoint x="1576" y="615" />
+        <di:waypoint x="1576" y="275" />
+        <di:waypoint x="1610" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1730" y="275" />
+        <di:waypoint x="1756" y="275" />
+        <di:waypoint x="1756" y="445" />
+        <di:waypoint x="1790" y="445" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1910" y="445" />
+        <di:waypoint x="1936" y="445" />
+        <di:waypoint x="1936" y="615" />
+        <di:waypoint x="2005" y="615" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="2030" y="640" />
+        <di:waypoint x="2030" y="669" />
+        <di:waypoint x="410" y="669" />
+        <di:waypoint x="410" y="647" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="2055" y="615" />
+        <di:waypoint x="2192" y="615" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

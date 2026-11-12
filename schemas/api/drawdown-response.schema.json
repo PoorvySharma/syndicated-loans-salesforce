@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/syndicated-loans/schemas/api/drawdown-response.schema.json",
+  "title": "POST /syndication/v1/drawdowns - response",
+  "description": "200 with id/status, or 400/403/404 with only `error`. A business-rule rejection is a 200 with status Rejected and a reason.",
+  "oneOf": [
+    { "type": "object", "required": ["id", "status"], "properties": {
+        "id": { "type": "string" }, "status": { "enum": ["Notified", "Rejected"] }, "rejectionReason": { "type": ["string", "null"] } } },
+    { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } } }
+  ]
+}

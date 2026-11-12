@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Calendar_Days__c</fullName>
+    <label>Calendar Days</label>
+    <precision>18</precision>
+    <scale>0</scale>
+    <formula>End_Date__c - Start_Date__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <type>Number</type>
+</CustomField>

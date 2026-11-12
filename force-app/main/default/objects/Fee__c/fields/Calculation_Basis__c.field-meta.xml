@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Calculation_Basis__c</fullName>
+    <label>Calculation Basis</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Fixed Amount</fullName>
+                <default>false</default>
+                <label>Fixed Amount</label>
+            </value>
+            <value>
+                <fullName>Percent of Commitment</fullName>
+                <default>false</default>
+                <label>Percent of Commitment</label>
+            </value>
+            <value>
+                <fullName>Percent of Undrawn</fullName>
+                <default>false</default>
+                <label>Percent of Undrawn</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

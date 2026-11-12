@@ -1,0 +1,5 @@
+{
+  "eventType": "FACILITY_ALLOCATED", "dealId": "a00Wx000000AaAaIAK", "recordId": "a01Wx000001AbCdIAK",
+  "payload": { "facilityId": "a01Wx000001AbCdIAK", "commitment": 100000000.00, "totalSoftCommit": 150000000.00,
+               "totalAllocated": 100000000.00, "cutBackPct": 66.67, "blockedLenders": [] }
+}

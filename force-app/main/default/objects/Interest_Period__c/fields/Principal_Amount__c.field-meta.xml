@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Principal_Amount__c</fullName>
+    <label>Principal</label>
+    <precision>18</precision>
+    <required>true</required>
+    <scale>2</scale>
+    <type>Currency</type>
+</CustomField>

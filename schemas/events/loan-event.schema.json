@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/syndicated-loans/schemas/events/loan-event.schema.json",
+  "title": "Loan Event (decoded)",
+  "description": "A Loan_Event__e platform event with its JSON Payload__c already parsed. Event_Type__c -> eventType, Deal_Id__c -> dealId, Record_Id__c -> recordId, Payload__c -> payload.",
+  "type": "object",
+  "required": ["eventType", "recordId", "payload"],
+  "properties": {
+    "eventType": {
+      "enum": ["FACILITY_ALLOCATED", "FACILITY_CLOSED", "DRAWDOWN_NOTIFIED", "DRAWDOWN_REJECTED", "DRAWDOWN_FUNDED", "DRAWDOWN_REPAID", "INTEREST_DISTRIBUTED", "AMENDMENT_RESOLVED", "COVENANT_BREACH", "ASSIGNMENT_SETTLED"]
+    },
+    "dealId": { "$ref": "#/$defs/sfId" },
+    "recordId": { "$ref": "#/$defs/sfId" },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    { "if": { "properties": { "eventType": { "const": "FACILITY_ALLOCATED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["facilityId", "commitment", "totalSoftCommit", "totalAllocated", "cutBackPct", "blockedLenders"],
+        "properties": { "facilityId": { "$ref": "#/$defs/sfId" }, "commitment": { "$ref": "#/$defs/money" }, "totalSoftCommit": { "$ref": "#/$defs/money" }, "totalAllocated": { "$ref": "#/$defs/money" },
+          "cutBackPct": { "type": "number", "minimum": 0, "maximum": 100 }, "blockedLenders": { "type": "array", "items": { "type": "string" } } } } } } },
+    { "if": { "properties": { "eventType": { "const": "FACILITY_CLOSED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["facilityId", "commitment", "lenderCount"],
+        "properties": { "facilityId": { "$ref": "#/$defs/sfId" }, "commitment": { "$ref": "#/$defs/money" }, "lenderCount": { "type": "integer", "minimum": 0 } } } } } },
+    { "if": { "properties": { "eventType": { "const": "DRAWDOWN_NOTIFIED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["drawdownId", "amount", "valueDate", "shares"],
+        "properties": { "drawdownId": { "$ref": "#/$defs/sfId" }, "amount": { "$ref": "#/$defs/money" }, "valueDate": { "type": "string", "format": "date" },
+          "shares": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["commitmentId", "amount"], "properties": { "commitmentId": { "$ref": "#/$defs/sfId" }, "amount": { "$ref": "#/$defs/money" } } } } } } } } },
+    { "if": { "properties": { "eventType": { "const": "DRAWDOWN_REJECTED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["drawdownId", "reason"], "properties": { "drawdownId": { "$ref": "#/$defs/sfId" }, "reason": { "type": "string" } } } } } },
+    { "if": { "properties": { "eventType": { "enum": ["DRAWDOWN_FUNDED", "DRAWDOWN_REPAID"] } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["drawdownId", "amount"], "properties": { "drawdownId": { "$ref": "#/$defs/sfId" }, "amount": { "$ref": "#/$defs/money" } } } } } },
+    { "if": { "properties": { "eventType": { "const": "INTEREST_DISTRIBUTED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["periodId", "drawdownId", "interestAmount", "distributions"],
+        "properties": { "periodId": { "$ref": "#/$defs/sfId" }, "drawdownId": { "$ref": "#/$defs/sfId" }, "interestAmount": { "$ref": "#/$defs/money" },
+          "distributions": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["commitmentId", "amount"], "properties": { "commitmentId": { "$ref": "#/$defs/sfId" }, "amount": { "$ref": "#/$defs/money" } } } } } } } } },
+    { "if": { "properties": { "eventType": { "const": "AMENDMENT_RESOLVED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["amendmentId", "outcome", "consentPct"],
+        "properties": { "amendmentId": { "$ref": "#/$defs/sfId" }, "outcome": { "enum": ["Approved", "Rejected", "Expired"] }, "consentPct": { "type": "number", "minimum": 0, "maximum": 100 } } } } } },
+    { "if": { "properties": { "eventType": { "const": "COVENANT_BREACH" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["covenantId", "testId", "actual", "threshold"],
+        "properties": { "covenantId": { "$ref": "#/$defs/sfId" }, "testId": { "$ref": "#/$defs/sfId" }, "actual": { "type": "number" }, "threshold": { "type": "number" } } } } } },
+    { "if": { "properties": { "eventType": { "const": "ASSIGNMENT_SETTLED" } } },
+      "then": { "properties": { "payload": { "type": "object", "required": ["assignmentId", "sellerCommitmentId", "buyerAccountId", "amount"],
+        "properties": { "assignmentId": { "$ref": "#/$defs/sfId" }, "sellerCommitmentId": { "$ref": "#/$defs/sfId" }, "buyerAccountId": { "$ref": "#/$defs/sfId" }, "amount": { "$ref": "#/$defs/money" } } } } } }
+  ],
+  "$defs": {
+    "sfId": { "type": "string", "pattern": "^[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?$", "description": "15- or 18-character Salesforce Id" },
+    "money": { "type": "number", "description": "Amount in the org currency, 2 decimals" }
+  }
+}

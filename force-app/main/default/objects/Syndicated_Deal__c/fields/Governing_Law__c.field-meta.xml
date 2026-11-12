@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Governing_Law__c</fullName>
+    <label>Governing Law</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>English Law</fullName>
+                <default>false</default>
+                <label>English Law</label>
+            </value>
+            <value>
+                <fullName>New York Law</fullName>
+                <default>false</default>
+                <label>New York Law</label>
+            </value>
+            <value>
+                <fullName>German Law</fullName>
+                <default>false</default>
+                <label>German Law</label>
+            </value>
+            <value>
+                <fullName>French Law</fullName>
+                <default>false</default>
+                <label>French Law</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

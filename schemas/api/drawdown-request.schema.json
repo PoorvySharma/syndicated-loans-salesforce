@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/syndicated-loans/schemas/api/drawdown-request.schema.json",
+  "title": "POST /syndication/v1/drawdowns - request",
+  "type": "object",
+  "required": ["facilityId", "amount", "valueDate"],
+  "additionalProperties": false,
+  "properties": {
+    "facilityId": { "type": "string", "pattern": "^[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?$", "description": "Id of an Active Facility__c" },
+    "amount": { "type": "number", "exclusiveMinimum": 0, "description": "Drawdown amount in the org currency" },
+    "valueDate": { "type": "string", "format": "date", "description": "Utilisation date (YYYY-MM-DD), not in the past" }
+  }
+}

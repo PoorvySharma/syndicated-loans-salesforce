@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/syndicated-loans/schemas/api/rate-fixing-response.schema.json",
+  "title": "POST /syndication/v1/rates - response",
+  "oneOf": [
+    { "type": "object", "required": ["id", "status"], "properties": {
+        "id": { "type": "string" }, "status": { "enum": ["Rate Fixed", "Calculated"] }, "interestAmount": { "type": ["number", "null"] } } },
+    { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } } }
+  ]
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Day_Count__c</fullName>
+    <label>Day Count</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ACT/360</fullName>
+                <default>false</default>
+                <label>ACT/360</label>
+            </value>
+            <value>
+                <fullName>ACT/365</fullName>
+                <default>false</default>
+                <label>ACT/365</label>
+            </value>
+            <value>
+                <fullName>30E/360</fullName>
+                <default>false</default>
+                <label>30E/360</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

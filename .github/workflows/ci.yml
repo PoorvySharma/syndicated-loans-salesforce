@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  offline-checks:
+    name: Offline checks (no org needed)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install jsonschema
+      - name: Validate repo (XML, JSON, code references)
+        run: python3 tools/validate_repo.py
+      - name: Validate schemas and examples
+        run: python3 tools/validate_schemas.py
+      - name: Check markdown links
+        run: python3 tools/check_links.py
+      - name: Cross-check test arithmetic
+        run: python3 tools/verify_math.py
+      - name: Regenerate metadata and diagrams, fail on drift
+        run: |
+          python3 tools/generate_metadata.py
+          python3 tools/generate_bpmn.py
+          git diff --exit-code
+
+  salesforce-tests:
+    name: Deploy to scratch org and run Apex tests (optional)
+    needs: offline-checks
+    runs-on: ubuntu-latest
+    env:
+      SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip notice
+        if: env.SFDX_AUTH_URL == ''
+        run: echo "Secret SFDX_AUTH_URL not set - skipping scratch org tests. See docs/08-deployment-and-testing.md."
+      - uses: actions/setup-node@v4
+        if: env.SFDX_AUTH_URL != ''
+        with:
+          node-version: "20"
+      - name: Install Salesforce CLI
+        if: env.SFDX_AUTH_URL != ''
+        run: npm install --global @salesforce/cli
+      - name: Authenticate to Dev Hub
+        if: env.SFDX_AUTH_URL != ''
+        run: |
+          echo "$SFDX_AUTH_URL" > authurl.txt
+          sf org login sfdx-url --sfdx-url-file authurl.txt --alias devhub --set-default-dev-hub
+          rm authurl.txt
+      - name: Create scratch org
+        if: env.SFDX_AUTH_URL != ''
+        run: sf org create scratch --definition-file config/project-scratch-def.json --alias ci --set-default --duration-days 1
+      - name: Deploy
+        if: env.SFDX_AUTH_URL != ''
+        run: sf project deploy start --target-org ci
+      - name: Run Apex tests
+        if: env.SFDX_AUTH_URL != ''
+        run: sf apex run test --target-org ci --test-level RunLocalTests --wait 30 --code-coverage --result-format human
+      - name: Run lifecycle script
+        if: env.SFDX_AUTH_URL != ''
+        run: sf apex run --target-org ci --file scripts/apex/run-lifecycle.apex
+      - name: Delete scratch org
+        if: always() && env.SFDX_AUTH_URL != ''
+        run: sf org delete scratch --target-org ci --no-prompt

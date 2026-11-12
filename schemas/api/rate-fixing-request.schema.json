@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/syndicated-loans/schemas/api/rate-fixing-request.schema.json",
+  "title": "POST /syndication/v1/rates - request",
+  "type": "object",
+  "required": ["interestPeriodId", "baseRatePct"],
+  "additionalProperties": false,
+  "properties": {
+    "interestPeriodId": { "type": "string", "pattern": "^[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?$", "description": "Id of an Open Interest_Period__c" },
+    "baseRatePct": { "type": "number", "description": "Base rate as a plain percent number: 4.30 means 4.30%. May be negative; the floor at 0 is applied in the calculation." },
+    "calculate": { "type": "boolean", "default": false, "description": "Also calculate the interest amount" }
+  }
+}

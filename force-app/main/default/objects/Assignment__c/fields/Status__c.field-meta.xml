@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <trackHistory>true</trackHistory>
+    <label>Status</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Proposed</fullName>
+                <default>true</default>
+                <label>Proposed</label>
+            </value>
+            <value>
+                <fullName>Pending Borrower Consent</fullName>
+                <default>false</default>
+                <label>Pending Borrower Consent</label>
+            </value>
+            <value>
+                <fullName>Pending Agent Approval</fullName>
+                <default>false</default>
+                <label>Pending Agent Approval</label>
+            </value>
+            <value>
+                <fullName>Settled</fullName>
+                <default>false</default>
+                <label>Settled</label>
+            </value>
+            <value>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+                <label>Rejected</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Seller_Commitment__c</fullName>
+    <label>Seller Commitment</label>
+    <required>true</required>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <referenceTo>Lender_Commitment__c</referenceTo>
+    <relationshipLabel>Outgoing Assignments</relationshipLabel>
+    <relationshipName>Outgoing_Assignments</relationshipName>
+    <type>Lookup</type>
+</CustomField>

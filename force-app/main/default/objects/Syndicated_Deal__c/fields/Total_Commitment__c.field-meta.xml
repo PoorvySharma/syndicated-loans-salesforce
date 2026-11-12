@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Commitment__c</fullName>
+    <description>Sum of all facility commitments.</description>
+    <label>Total Commitment</label>
+    <summarizedField>Facility__c.Commitment_Amount__c</summarizedField>
+    <summaryForeignKey>Facility__c.Deal__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>
